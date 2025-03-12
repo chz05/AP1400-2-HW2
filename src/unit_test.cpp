@@ -4,7 +4,7 @@
 #include "server.h"
 #include "client.h"
 
-/*
+
 TEST(HW1Test, TEST1) {
     Server server{};
     auto bryan{server.add_client("bryan")};
@@ -93,10 +93,11 @@ TEST(HW1Test, TEST12) {
     Server server{};
     auto bryan{server.add_client("bryan")};
     auto clint{server.add_client("clint")};
+    //show_wallets(server);
     bool valid{bryan->transfer_money("no_one", 0.5)};
     EXPECT_FALSE(valid);
 }
-
+/*
 TEST(HW1Test, TEST13) {
     Server server{};
     auto bryan{server.add_client("bryan")};
@@ -104,7 +105,7 @@ TEST(HW1Test, TEST13) {
     bool valid{bryan->transfer_money("clint", 100)};
     EXPECT_FALSE(valid);
 }
-
+/*
 TEST(HW1Test, TEST14) {
     Server server{};
     pending_trxs.clear();
@@ -120,7 +121,7 @@ TEST(HW1Test, TEST14) {
         std::cout << trx <<  std::endl;
     std::cout  <<  std::string(20, '*') <<  std::endl;
 }
-
+/*
 TEST(HW1Test, TEST15) {
     Server server{};
     pending_trxs.clear();
