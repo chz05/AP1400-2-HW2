@@ -25,7 +25,11 @@ std::string Client::sign(std::string txt) const{
 }
 
 bool Client::transfer_money(std::string receiver, double value){
+    if (server->get_client(receiver) == nullptr){
+        return false;
+    }
     std::string transaction = id + "-" + receiver + "-" + std::to_string(value);
+    //std::cout << transaction << std::endl;
     std::string signature = sign(transaction);
     return server->add_pending_trx(transaction, signature);
 }

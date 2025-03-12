@@ -82,18 +82,18 @@ bool Server::parse_trx(std::string trx, std::string& sender, std::string& receiv
 }
 
 bool Server::add_pending_trx(std::string trx, std::string signature) const{
-	size_t first = trx.find('-');
-    size_t second = trx.find('-', first + 1);
-    size_t third = trx.find('-', second + 1);
-	std::string sender = trx.substr(0, first);
-    std::string receiver = trx.substr(first + 1, second - first - 1);
-    std::string value = trx.substr(second + 1);
-	double money = std::stod(value);
+	std::string sender;
+    std::string receiver;
+    double money;
+	if (parse_trx(trx, sender, receiver, money) == false){
+		return false;
+	}
 	double sender_money = get_wallet(sender);
-
+	//std::cout << sender << " " << receiver << " " << value << std::endl;
 	if (sender_money < money){
 		return false;
 	}
+	//std::cout << "go to there after the money." << std::endl;
 	std::shared_ptr<Client> sender_client = get_client(sender);
 	bool authentic = crypto::verifySignature(sender_client->get_publickey(), trx, signature);
 	if (!authentic){
@@ -109,36 +109,33 @@ std::size_t Server::mine(){
         transactions += pending_trxs[i];
     }
 	for (;;){
-	for (auto& client: clients){
-		std::string append_nounce_transactions = transactions;
-		std::size_t random_number = client.first->generate_nonce();
-		append_nounce_transactions = transactions + std::to_string(random_number);
-		std::string final_string = crypto::sha256(append_nounce_transactions);
-		std::string first_ten = final_string.substr(0, 10);
-		if (first_ten.find("000") != std::string::npos) {
-			std::cout << client.first->get_id() << std::endl;
-			client.second += 6.5;
-			for (int i = 0; i < pending_trxs.size(); i++){
-				size_t first = pending_trxs[i].find('-');
-				size_t second = pending_trxs[i].find('-', first + 1);
-				size_t third = pending_trxs[i].find('-', second + 1);
-				std::string sender = pending_trxs[i].substr(0, first);
-				std::string receiver = pending_trxs[i].substr(first + 1, second - first - 1);
-				std::string value = pending_trxs[i].substr(second + 1);
-				double money = std::stod(value);
-				for (auto &client_2: clients){
-					if (client_2.first->get_id() == sender){
-						client_2.second -= money;
-					}
-					if (client_2.first->get_id() == receiver){
-						client_2.second += money;
+		for (auto& client: clients){
+			std::string append_nounce_transactions = transactions;
+			std::size_t random_number = client.first->generate_nonce();
+			append_nounce_transactions = transactions + std::to_string(random_number);
+			std::string final_string = crypto::sha256(append_nounce_transactions);
+			std::string first_ten = final_string.substr(0, 10);
+			if (first_ten.find("000") != std::string::npos) {
+				std::cout << client.first->get_id() << std::endl;
+				client.second += 6.25;
+				for (int i = 0; i < pending_trxs.size(); i++){
+					std::string sender;
+					std::string receiver;
+					double money;
+					parse_trx(pending_trxs[i], sender, receiver, money);
+					for (auto &client_2: clients){
+						if (client_2.first->get_id() == sender){
+							client_2.second -= money;
+						}
+						if (client_2.first->get_id() == receiver){
+							client_2.second += money;
+						}
 					}
 				}
+				pending_trxs.clear();
+				return random_number;
 			}
-			pending_trxs.clear();
-			return random_number;
 		}
-	}
 }
 }
 

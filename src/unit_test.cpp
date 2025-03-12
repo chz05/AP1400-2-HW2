@@ -97,7 +97,7 @@ TEST(HW1Test, TEST12) {
     bool valid{bryan->transfer_money("no_one", 0.5)};
     EXPECT_FALSE(valid);
 }
-/*
+
 TEST(HW1Test, TEST13) {
     Server server{};
     auto bryan{server.add_client("bryan")};
@@ -105,7 +105,7 @@ TEST(HW1Test, TEST13) {
     bool valid{bryan->transfer_money("clint", 100)};
     EXPECT_FALSE(valid);
 }
-/*
+
 TEST(HW1Test, TEST14) {
     Server server{};
     pending_trxs.clear();
@@ -121,7 +121,7 @@ TEST(HW1Test, TEST14) {
         std::cout << trx <<  std::endl;
     std::cout  <<  std::string(20, '*') <<  std::endl;
 }
-/*
+
 TEST(HW1Test, TEST15) {
     Server server{};
     pending_trxs.clear();
@@ -147,7 +147,6 @@ TEST(HW1Test, TEST15) {
     EXPECT_TRUE(clint->get_wallet()==3.5 ||clint->get_wallet()==3.5 ||clint->get_wallet()==9.75);
     EXPECT_TRUE(sarah->get_wallet()==13.25 || sarah->get_wallet()==7 || sarah->get_wallet()==7);
 }
-*/
 
 
 
